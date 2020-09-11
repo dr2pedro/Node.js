@@ -1,24 +1,24 @@
 {
-  "name": "authentication_component",
+  "name": "signinup_component",
   "version": "0.0.1",
-  "description": " A basic component to implement authentication in APIs.",
+  "description": "An express.js app to deal of signup and signin microservices as containers trougth a gateway.",
   "scripts": {
-    "start_signUp": "node signUp/index.js",
-    "start_signIn": "node signIn/index.js",
-    "start_gateway": "node gateway/index.js",
-    "dev_signUp": "nodemon signUp/index.js",
-    "dev_signIn": "nodemon signIn/index.js",
-    "dev_gateway": "nodemon gateway/index.js",
-    "lint_signUp": "eslint --fix signUp",
-    "lint_signIn": "eslint --fix signIn",
-    "test_signUp": "mocha 'signUp/test/app.test.js' --exit",
-    "test_signIn": "mocha 'signIn/test/app.test.js' --exit"
+    "start_signUp": "node server/signUp/index.js",
+    "start_signIn": "node server/signIn/index.js",
+    "start_gateway": "node server/gateway/index.js",
+    "dev_signUp": "nodemon server/signUp/index.js",
+    "dev_signIn": "nodemon server/signIn/index.js",
+    "dev_gateway": "nodemon server/gateway/index.js",
+    "lint_signUp": "eslint --fix server/signUp",
+    "lint_signIn": "eslint --fix server/signIn",
+    "test_signUp": "mocha 'server/signUp/test/app.test.js' --exit",
+    "test_signIn": "mocha 'server/signIn/test/app.test.js' --exit"
   },
   "keywords": [],
   "author": "Pedro Paulo dos Santos",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dr2pedro/api_express.git"
+    "url": "https://github.com/dr2pedro/SignInUp.git"
   },
   "license": "MIT",
   "dependencies": {
