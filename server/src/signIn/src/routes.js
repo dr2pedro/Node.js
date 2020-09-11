@@ -7,7 +7,7 @@ const db = monk(process.env.MONGO_URI)
 const user = db.get('users')
 
 const router = express.Router()
-const {secret} = require('../../config/auth.json')
+const {secret} = require('../auth.json')
 
 
 router.post('/signin', async (req, res, next) => {

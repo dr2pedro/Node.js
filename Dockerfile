@@ -1,6 +1,5 @@
 FROM node:latest 
 WORKDIR /app
 COPY package.json package-lock.json ./
-COPY server/gateway .
+COPY server/src/signIn server/config ./
 RUN npm install
-ENTRYPOINT ["npm", "run", "dev_gateway"]
