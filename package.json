@@ -3,16 +3,10 @@
   "version": "0.0.1",
   "description": "An express.js app to deal of signup and signin microservices as containers trougth a gateway.",
   "scripts": {
-    "start_signUp": "node index.js",
-    "start_signIn": "node index.js",
-    "start_gateway": "node index.js",
-    "dev_signUp": "nodemon index.js",
-    "dev_signIn": "nodemon index.js",
-    "dev_gateway": "nodemon index.js",
-    "lint_signUp": "eslint --fix signUp",
-    "lint_signIn": "eslint --fix signIn",
-    "test_signUp": "mocha 'test/app.test.js' --exit",
-    "test_signIn": "mocha 'test/app.test.js' --exit"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint --fix",
+    "test": "mocha 'test/app.test.js' --exit"
   },
   "keywords": [],
   "author": "Pedro Paulo dos Santos",
