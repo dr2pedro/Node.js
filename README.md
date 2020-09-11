@@ -1,4 +1,4 @@
-# Rascunho de _Sign In | Sign Up_ para APIs
+# Rascunho de _Sign In and Sign Up_ para APIs
 
 ## Sobre o projeto
 <br>
