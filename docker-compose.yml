@@ -1,0 +1,10 @@
+version: '3'
+
+services: 
+    signin:
+        build: ./
+        expose:
+            - ${PORT_SIGNIN}
+        ports:
+            - ${PORT_SIGNIN}:${PORT_SIGNIN}
+        command: npm run dev
