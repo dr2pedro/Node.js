@@ -2,7 +2,10 @@ version: '3'
 
 services: 
     signin:
-        build: ./
+        build: 
+            context: ./
+            args:
+            - src=signin
         expose:
             - ${PORT_SIGNIN}
         ports:
