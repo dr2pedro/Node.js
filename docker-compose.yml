@@ -14,8 +14,6 @@ services:
         command: npm run dev
         links:
           - mongo
-        networks:
-          - test 
     
     mongo-express:
         image: mongo-express
@@ -29,8 +27,6 @@ services:
           ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ADMIN_PASSWORD}
         links:
           - mongo
-        networks:
-          - test
       
     mongo:
         image: mongo
@@ -41,9 +37,3 @@ services:
          - "27017:27017"
         volumes:
          - /mongo_data:/data/db
-        networks:
-         - test
-    
-    networks: 
-      test:
-        name: test_net
