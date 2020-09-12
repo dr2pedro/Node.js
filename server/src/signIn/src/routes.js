@@ -9,6 +9,10 @@ const user = db.get('users')
 const router = express.Router()
 const {secret} = require('../auth.json')
 
+router.get('/', function (req, res) {
+  console.log(router.mountpath) // /admin
+  res.send('Welcome')
+})
 
 router.post('/signin', async (req, res, next) => {
   try {
