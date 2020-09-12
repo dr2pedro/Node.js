@@ -44,4 +44,4 @@ services:
     
     networks: 
         test:
-        driver: bridge
+          driver: bridge
