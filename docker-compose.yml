@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services: 
 
@@ -14,6 +14,8 @@ services:
         command: npm run dev
         links:
           - mongo
+        networks:
+          - test 
     
     mongo-express:
         image: mongo-express
@@ -43,5 +45,5 @@ services:
          - test
     
     networks: 
-        test:
-          driver: bridge
+      test:
+        name: test_net
