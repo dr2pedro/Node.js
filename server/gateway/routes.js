@@ -1,5 +1,3 @@
-const signIn = require('../signIn/app')
-const signUp = require('../signUp/app')
 const express = require('express')
 
 const router = express.Router()
