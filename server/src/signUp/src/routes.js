@@ -8,7 +8,7 @@ const user = db.get('users')
 const schema = require('./schema.js')
 
 const router = express.Router()
-const authConfig = require('../../config/auth.json')
+const authConfig = require('../auth.json')
 
 router.post('/signup', async (req, res, next) => {
   try {

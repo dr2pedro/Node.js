@@ -13,26 +13,23 @@ services:
             - ${PORT_SIGNIN}:${PORT_SIGNIN}
         command: npm run dev
         links:
-          - mongo
-    
-    mongo-express:
-        image: mongo-express
+          - db
+
+    signup:
+        build: 
+          context: ./
+          args:
+          - src=signup
+        expose:
+          - ${PORT_SIGNUP}
         ports:
-          - 8081:8081
-        environment:
-          ME_CONFIG_BASICAUTH_USERNAME: user
-          ME_CONFIG_BASICAUTH_PASSWORD: user
-          ME_CONFIG_MONGODB_PORT: 27017
-          ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-          ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ADMIN_PASSWORD}
+          - ${PORT_SIGNUP}:${PORT_SIGNUP}
+        command: npm run dev
         links:
-          - mongo
-      
-    mongo:
+        - db
+        
+    db:
         image: mongo
-        environment:
-          MONGO_INITDB_ROOT_USERNAME: admin
-          MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ADMIN_PASSWORD}
         ports:
          - "27017:27017"
         volumes:
