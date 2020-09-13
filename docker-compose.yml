@@ -2,15 +2,26 @@ version: '3.5'
 
 services: 
 
+    gateway:
+        build:
+          context: ./
+          args:
+          - src=gateway
+        expose:
+          - ${GATEWAY_PORT}
+        ports:
+          - ${GATEWAY_PORT}:${GATEWAY_PORT}
+        command: npm run dev
+
     signin:
         build: 
-            context: ./
-            args:
-            - src=signin
+          context: ./
+          args:
+          - src=signin
         expose:
-            - ${PORT_SIGNIN}
+          - ${PORT_SIGNIN}
         ports:
-            - ${PORT_SIGNIN}:${PORT_SIGNIN}
+          - ${PORT_SIGNIN}:${PORT_SIGNIN}
         command: npm run dev
         links:
           - db
