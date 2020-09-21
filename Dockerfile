@@ -2,7 +2,7 @@ ARG src
 
 FROM node:latest AS base
 WORKDIR /app
-COPY server/config/auth.json package.json package-lock.json .env ./
+COPY server/configs/auth.json package.json package-lock.json .env ./
 
 FROM base AS signin 
 COPY server/src/signIn ./
