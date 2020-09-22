@@ -1,47 +1,74 @@
 version: '3.5'
 
+volumes:
+  mongo_data:
+    external: 
+      name: mongo_data
+
+networks: 
+  databases:
+  views:
+
 services: 
 
-    gateway:
-        build:
-          context: ./
-          args:
-          - src=gateway
-        expose:
-          - ${GATEWAY_PORT}
-        ports:
-          - ${GATEWAY_PORT}:${GATEWAY_PORT}
-        command: npm run dev
+  gateway:
+    build:
+      context: ./
+      args:
+      - src=gateway
+    expose:
+      - ${GATEWAY_PORT}
+    ports:
+      - ${GATEWAY_PORT}:${GATEWAY_PORT}
+    command: npm run dev
+    networks: 
+      - databases
+      - views
+    deploy:
+      replicas: 1
 
-    signin:
-        build: 
-          context: ./
-          args:
-          - src=signin
-        expose:
-          - ${PORT_SIGNIN}
-        ports:
-          - ${PORT_SIGNIN}:${PORT_SIGNIN}
-        command: npm run dev
-        links:
-          - db
+  signin:
+    build: 
+      context: ./
+      args:
+      - src=signin
+    expose:
+      - ${PORT_SIGNIN}
+    ports:
+      - ${PORT_SIGNIN}:${PORT_SIGNIN}
+    command: npm run dev
+    links:
+      - db
+    networks: 
+      - databases
+    deploy:
+      replicas: 1
 
-    signup:
-        build: 
-          context: ./
-          args:
-          - src=signup
-        expose:
-          - ${PORT_SIGNUP}
-        ports:
-          - ${PORT_SIGNUP}:${PORT_SIGNUP}
-        command: npm run dev
-        links:
-        - db
-        
-    db:
-        image: mongo
-        ports:
-         - "27017:27017"
-        volumes:
-         - /mongo_data:/data/db
+  signup:
+    build: 
+      context: ./
+      args:
+      - src=signup
+    expose:
+      - ${PORT_SIGNUP}
+    ports:
+      - ${PORT_SIGNUP}:${PORT_SIGNUP}
+    command: npm run dev
+    links:
+    - db
+    networks: 
+      - databases
+    deploy:
+      replicas: 1
+      
+  db:
+    image: mongo
+    container_name: db
+    ports:
+      - "27017"
+    volumes:
+      - mongo_data:/data/db
+    networks: 
+      - databases
+    deploy:
+      replicas: 1
