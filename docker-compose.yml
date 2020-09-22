@@ -10,32 +10,27 @@ networks:
   views:
 
 services: 
-
   gateway:
     build:
       context: ./
       args:
       - src=gateway
-    expose:
-      - ${GATEWAY_PORT}
+    deploy:
+      replicas: 1
     ports:
-      - ${GATEWAY_PORT}:${GATEWAY_PORT}
+      - 2000:2000
     command: npm run dev
     networks: 
       - databases
       - views
-    deploy:
-      replicas: 1
 
   signin:
     build: 
       context: ./
       args:
       - src=signin
-    expose:
-      - ${PORT_SIGNIN}
     ports:
-      - ${PORT_SIGNIN}:${PORT_SIGNIN}
+      - 2221:2221
     command: npm run dev
     links:
       - db
@@ -49,20 +44,21 @@ services:
       context: ./
       args:
       - src=signup
-    expose:
-      - ${PORT_SIGNUP}
+    deploy:
+      replicas: 1
     ports:
-      - ${PORT_SIGNUP}:${PORT_SIGNUP}
+    - 2222:2222
     command: npm run dev
     links:
     - db
     networks: 
       - databases
-    deploy:
-      replicas: 1
+    
       
   db:
     image: mongo
+    deploy:
+      replicas: 1
     container_name: db
     ports:
       - "27017"
@@ -70,5 +66,4 @@ services:
       - mongo_data:/data/db
     networks: 
       - databases
-    deploy:
-      replicas: 1
+    
