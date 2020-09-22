@@ -31,8 +31,6 @@ services:
     ports:
       - 2221:2221
     command: npm run dev
-    links:
-      - db
     networks: 
       - databases
     deploy:
@@ -48,8 +46,6 @@ services:
     ports:
     - 2222:2222
     command: npm run dev
-    links:
-    - db
     networks: 
       - databases
     
