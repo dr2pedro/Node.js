@@ -2,6 +2,7 @@ version: '3.5'
 
 volumes:
   mongo_data:
+    external: 
       name: mongo_data
 
 networks: 
@@ -14,6 +15,7 @@ services:
       context: ./
       args:
       - src=gateway
+    image: gateway:latest
     deploy:
       replicas: 1
     ports:
@@ -28,9 +30,12 @@ services:
       context: ./
       args:
       - src=signin
+    image: signin:latest
     ports:
       - 2221:2221
     command: npm run dev
+    links:
+      - db
     networks: 
       - databases
     deploy:
@@ -41,11 +46,14 @@ services:
       context: ./
       args:
       - src=signup
+    image: signup:latest
     deploy:
       replicas: 1
     ports:
     - 2222:2222
     command: npm run dev
+    links:
+    - db
     networks: 
       - databases
     
@@ -54,7 +62,6 @@ services:
     image: mongo
     deploy:
       replicas: 1
-    container_name: db
     ports:
       - "27017"
     volumes:
