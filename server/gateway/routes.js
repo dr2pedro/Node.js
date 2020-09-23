@@ -4,6 +4,10 @@ const router = express.Router()
 const signInPort = process.env.PORT_SIGNIN
 const signUpPort = process.env.PORT_SIGNUP
 
+router.get('/', (req, res) => {
+    res.send('The gateway app is healthy...')
+})
+
 router.post('/signin', async (req, res, next) =>{
     try {
         res.redirect(307, "http://localhost:" + signInPort + "/signin")
