@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 
 router.post('/signin', async (req, res, next) =>{
     try {
-        res.redirect(307, "signin:" + signInPort + "/signin")
+        res.redirect(307, "signin:2221/signin")
     } catch (error) {
         next(error)  
     }
@@ -19,7 +19,7 @@ router.post('/signin', async (req, res, next) =>{
 
 router.post('/signup', async (req, res, next) =>{
     try {
-        res.redirect(307, "http://0.0.0.0:" + signUpPort + "/signup")  
+        res.redirect(307, "signup:2222/signup")  
     } catch (error) {
         next(error)
     }
