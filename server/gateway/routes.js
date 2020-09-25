@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 
 router.post('/signin', async (req, res, next) =>{
     try {
-        res.redirect(307, "signin:2221/signin")
+        res.redirect(308, "signin:2221/signin")
     } catch (error) {
         next(error)  
     }
@@ -19,7 +19,7 @@ router.post('/signin', async (req, res, next) =>{
 
 router.post('/signup', async (req, res, next) =>{
     try {
-        res.redirect(307, "signup:2222/signup")  
+        res.redirect(308, "signup:2222/signup")  
     } catch (error) {
         next(error)
     }
