@@ -7,23 +7,8 @@ volumes:
 
 networks: 
   databases:
-  views:
 
 services: 
-  gateway:
-    build:
-      context: ./
-      args:
-      - src=gateway
-    image: gateway:latest
-    deploy:
-      replicas: 1
-    ports:
-      - 2000:2000
-    command: npm run dev
-    networks: 
-      - databases
-      - views
 
   signin:
     build: 
