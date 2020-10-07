@@ -7,11 +7,11 @@ RUN apk --no-cache add curl
 
 FROM base AS signin 
 COPY server/src/signIn ./
-HEALTHCHECK CMD curl -fs http://localhost:${PORT_SIGNIN}/ || exit 1
+HEALTHCHECK CMD curl -fs "http://localhost:$PORT_SIGNIN/" || exit 1
 
 FROM base AS signup
 COPY server/src/signUp ./
-HEALTHCHECK CMD curl -fs http://localhost:${PORT_SIGNUP}/ || exit 1
+HEALTHCHECK CMD curl -fs "http://localhost:$PORT_SIGNUP/" || exit 1
 
 FROM ${src} AS after
 

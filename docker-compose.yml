@@ -2,7 +2,6 @@ version: '3.8'
 
 volumes:
   mongo_data:
-    external: 
       name: mongo_data
 
 networks: 
@@ -32,8 +31,6 @@ services:
       args:
       - src=signup
     image: signup:latest
-    deploy:
-      replicas: 1
     ports:
     - 2222:2222
     command: npm run dev
@@ -41,16 +38,16 @@ services:
     - db
     networks: 
       - databases
-    
+    deploy:
+      replicas: 1
       
   db:
     image: mongo
-    deploy:
-      replicas: 1
     ports:
       - "27017"
     volumes:
       - mongo_data:/data/db
     networks: 
       - databases
-    
+    deploy:
+      replicas: 1
