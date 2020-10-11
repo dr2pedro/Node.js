@@ -1,32 +1,101 @@
-# Rascunho de _Sign In and Sign Up_ para APIs
+# _Node_ para APIs
 
-## Sobre o projeto
+## Sobre
 <br>
 
-Esse é um projeto derivado de exercícios de aprendizado em _Node.js_. 
+Esse é um repositório derivado de exercícios de aprendizado em _Node.js_ e _Docker_, eventualmente usando o Swarm ou _Kubernetes_. 
 
 _Quem for utilizar, por favor, relevem as gafes e sintam-se a vontade para me ajudar a melhorar._
 
-A intenção desse rascunho é que ele possa servir de base para um microserviço de **_autenticação_**, separado ou unido a outros microserviços, para implementação de uma API. 
+A intenção é que o repositório contenha a base para múltiplos microserviços, como autenticação de cadastro de usuários, envio de e-mails, recuperação de informações, etc...
 
 <br>
 
+## Opções do autor
+### Banco de Dados / Database
+<br>
 
-As requisições para o microserviço serão dividas em dois tipos:
-* **Comandos** - Requisições que geram escrita no banco de dados;
-* **Querys** - Requisições de leitura no banco de dados;
+Considerando a versatilidade em se adaptar à outras databases possivelmente já implementadas em outros negócios a que esse repo venha a ser utilizado, optou-se pelo uso de **MongoDB** para persistência dos dados. 
+ 
+As requisições para esse microserviço serão dividas em dois tipos:
+* **Comandos** - Requisições que geram escrita;
+* **Querys** - Requisições de leitura;
+
+Os _Comandos_ estão passíveis à maiores latências enquanto as _Querys_ devem ser feitas à databases _read-only_ de rápida resposta. 
+É possível que a database para leitura seja derivada da de escrita, nesse cenário existirá **_Consistência Eventual_** dos dados, isso ocorre porque hipoteticamente os dados precisam ser exportados da base de escrita e importados para a de leitura, o que pode levar a um tempo (conhecido ou não dependendo da metodologia adotada).
 
 <br>
 
-Considerando que os registros de _Sign Up_ serão feitos apenas uma vez e os registros de _Sign In_ serão solicitados a todo momento, essa estrutura favorece com que o **banco de  escrita**, para comandos, sejá **ÚNICO**, enquanto o **banco de leitura** possa ser **REPLICADO** para  aguentar a demanda.
+### Implementação dos containers
+<br>
 
-A estrutura do microserviço utiliza _containers_ do **_Docker_** para permitir a replicação da base de leitura, o isolamento das bases de dados, o balanceamento das requisições, além de outras vantagens inerentes desse ambiente. 
-
-Considerando a versatilidade em se adaptar a outras databases já implementadas, foi escolhido como database _NoSQL_ o **MongoDB**.
+* Todos os containers estão em um único `Dockerfile` de _multistage build_; 
+* Visando a menor granularidade possível, cada estágio é responsável por uma 'regra de negócio'. Consequentemente `1 estágio = 1 container`;
+* Para um conjunto de estágios teremos `Gateways` reponsáveis por compor e caracterizar o microserviço;
+* No `docker-compose.yml` estão as especificações para deploy em cluster;
+* Por questões de segurança a _layer_ de **_HEALTHCHECK_** existe apenas no `docker-compose.yml`;
+* Os `middlewares` que não envolvem segurança estão presentes apenas nesses `Gatewayes`;
+* `Middlewares` de segurança estão implementados em **TODOS OS ESTÁGIOS**, ainda que soe redundante;
+* Considerando que os `middlewares` não são 'regras de negócio' por si só, eles estão separados em uma diretório que não está incluso no processo de build. Caso seja necessário utilizar alguns deles, acidione na _layer_ **_COPY_** do Dockerfile:
 
 <br>
 
-As features _Javascript_ utilizadas na camada da aplicação são:
+```Dockerfile
+FROM node:lts-alpine3.9 AS base
+WORKDIR /app
+COPY server/configs/auth.json src/middleware package.json package-lock.json .env ./
+```
+<br>
+
+e implemente manualmente nos seus _endpoints_:
+
+<br>
+
+```javascript
+const express = require('express')
+const middlewares = require('./middlewares')
+const router = express.Router()
+
+
+router.use(middlewares.guard)
+```
+
+<br>
+
+de modo global, ou...
+
+<br>
+
+```javascript
+const express = require('express')
+const { guard } = require('./middlewares')
+const router = express.Router()
+
+router.get('/', guard( ), async (req, res, next) => {
+    // TO DO
+})
+```
+<br>
+
+de modo local.
+
+<br>
+
+___
+<br>
+
+
+
+## Case
+<br>
+
+Esse _branch_ simula o seguinte cenário: 
+
+<br>
+
+"Imaginem que foi solicitado o desenvolvimento de uma API para SignIn e SignUp de usuários, com geração de token de autenticação e encriptação de _password_ no banco de dados."
+
+As seguintes features _Javascript_ podem ser utilizadas:
 
 | **Pacote**   |   **Função**                                     |
 |:------------:|:------------------------------------------------:|
@@ -38,14 +107,7 @@ As features _Javascript_ utilizadas na camada da aplicação são:
 | Supertest    | Testes end to end (E2E)                          |
 | Body-paser   | Manipulação de JSON                              |
 
-
 <br>
-
-___
-
-<br>
-
-## Diagrama Conceitual
 
 Abaixo está o diagrama de como a estrutura deve funcionar:
 
@@ -95,42 +157,3 @@ Teste os endpoints de _Sign Up_ e _Sign In_ com:
 npm run test
 ```
  <br>
-
-### Integração
-Na pasta `src/middleware` existe uma função chamada `Guard` que deve ser utilizada em _endpoints_ de outros microserviços para acessos apenas de usuários logados. 
-
-É possível utilizá-lo de modo global
-
-```javascript
-const express = require('express')
-const middlewares = require('./middlewares')
-const router = express.Router()
-
-
-router.use(middlewares.guard)
-```
-
-Ou de modo local
-
-```javascript
-const express = require('express')
-const { guard } = require('./middlewares')
-const router = express.Router()
-
-router.get('/', guard( ), async (req, res, next) => {
-    // TO DO
-})
-```
-<br>
-
-___
-<br>
-
-## Observações importantes
-
-<br>
-
-* Deve-se atentar ao fato de que uma vez que a base de leitura é a réplica da base de escrita existirá **_Consistência Eventual_** dos dados;
-
-<br>
-
