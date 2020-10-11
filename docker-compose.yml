@@ -6,9 +6,25 @@ volumes:
 
 networks: 
   databases:
+  view:
 
 services: 
 
+  gateway:
+    build: 
+      context: ./
+      args:
+      - src=gateway
+    image: gateway:latest
+    ports:
+      - ${PORT_GATEWAY}:${PORT_GATEWAY}
+    command: npm run start
+    networks: 
+      - databases
+      - view
+    deploy:
+      replicas: 1
+  
   signin:
     build: 
       context: ./
@@ -16,10 +32,12 @@ services:
       - src=signin
     image: signin:latest
     ports:
-      - 2221:2221
-    command: npm run dev
+      - ${PORT_SIGNIN}
+    command: npm run start
     networks: 
       - databases
+    healthcheck:
+      test: curl -fs "http://localhost:${PORT_SIGNIN}/" || exit 1
     deploy:
       replicas: 1
 
@@ -30,14 +48,27 @@ services:
       - src=signup
     image: signup:latest
     ports:
-    - 2222:2222
-    command: npm run dev
+    - ${PORT_SIGNUP}
+    command: npm run start
     networks: 
       - databases
+    healthcheck:
+      test: curl -fs "http://localhost:${PORT_SIGNUP}/" || exit 1
     deploy:
       replicas: 1
       
   db:
+    image: mongo
+    ports:
+      - "27017"
+    volumes:
+      - mongo_data:/data/db
+    networks: 
+      - databases
+    deploy:
+      replicas: 1
+
+  db2:
     image: mongo
     ports:
       - "27017"
