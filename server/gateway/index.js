@@ -17,7 +17,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/signin', proxy('http://signin:'+ signin_port + '/'))
-app.use('/signup', proxy('http://signup' + signup_port + '/'))
+app.use('/signup', proxy('http://signup:' + signup_port + '/'))
 
 
 app.listen(port, () => {
