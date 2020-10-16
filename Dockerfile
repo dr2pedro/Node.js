@@ -14,6 +14,9 @@ COPY server/src/signIn ./
 FROM base AS signup
 COPY server/src/signUp ./
 
+FROM base AS forgotpassword
+COPY server/src/forgotPassword ./
+
 FROM ${src} AS after
 
 FROM after

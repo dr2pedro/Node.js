@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     res.send('The signin app is healthy...')
 })
 
-router.post('/user', [findUser , createToken])
+router.post('/', [findUser , createToken])
 
 
 

@@ -28,6 +28,8 @@
     "monk": "^7.3.1",
     "monk-middleware-wrap-non-dollar-update": "^0.2.1",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.4.14",
+    "nodemailer-express-handlebars": "^4.0.0",
     "serve-favicon": "^2.5.0"
   },
   "devDependencies": {

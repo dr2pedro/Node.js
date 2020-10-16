@@ -56,19 +56,24 @@ services:
       test: curl -fs "http://localhost:${PORT_SIGNUP}/" || exit 1
     deploy:
       replicas: 1
-      
-  db:
-    image: mongo
+  
+  forgotpassword:
+    build: 
+      context: ./
+      args:
+      - src=forgotpassword
+    image: forgotpassword:latest
     ports:
-      - "27017"
-    volumes:
-      - mongo_data:/data/db
+    - ${PORT_FORGOTPASSWORD}
+    command: npm run start
     networks: 
       - databases
+    healthcheck:
+      test: curl -fs "http://localhost:${PORT_FORGOTPASSWORD}/" || exit 1
     deploy:
-      replicas: 1
+      replicas: 1    
 
-  db2:
+  db:
     image: mongo
     ports:
       - "27017"

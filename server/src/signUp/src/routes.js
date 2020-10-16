@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     res.send('The signup app is healthy...')
 })
 
-router.post('/user', [validateRequest, findUser, createUser])
+router.post('/', [validateRequest, findUser, createUser])
 
 
 

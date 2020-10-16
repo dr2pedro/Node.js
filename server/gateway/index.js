@@ -10,6 +10,7 @@ require('dotenv').config()
 const gateway_port = process.env.PORT_GATEWAY || 5080
 const signin_port = process.env.PORT_SIGNIN
 const signup_port = process.env.PORT_SIGNUP
+const forgot_password_port = process.env.PORT_FORGOTPASSWORD
 
 app.use(morgan('dev'))
 app.use(helmet())
@@ -18,9 +19,9 @@ app.use(cors())
 
 app.use('/signin', proxy('http://signin:'+ signin_port + '/'))
 app.use('/signup', proxy('http://signup:' + signup_port + '/'))
+app.use('/forgotpassword', proxy('http://forgotpassword:' + forgot_password_port + '/'))
 
-
-app.listen(port, () => {
+app.listen(gateway_port, () => {
   /* eslint-disable no-console */
   console.log(`Gateway endpoints listening on: http://localhost:${gateway_port}`)
   /* eslint-enable no-console */
