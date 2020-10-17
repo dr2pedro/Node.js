@@ -32,6 +32,7 @@ exports.generateCode = ( async ( req, res, next ) => {
 
 exports.sendByMail = ( async ( req, res ) => {
     try {
+        const { email } = req.body
         const older_request = await updates.findOne({ email }) 
         if (older_request) { await updates.remove({ email }) }
         const new_request = await updates.insert(res.payload)
