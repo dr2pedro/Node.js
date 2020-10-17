@@ -22,6 +22,8 @@ services:
     networks: 
       - databases
       - view
+    healthcheck:
+      test: curl -fs "http://localhost:${PORT_GATEWAY}/signup" || exit 1  
     deploy:
       replicas: 1
   

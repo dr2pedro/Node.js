@@ -32,9 +32,10 @@ exports.generateCode = ( async ( req, res, next ) => {
 
 exports.sendByMail = ( async ( req, res ) => {
     try {
-        // caso já exista usuário salvo com esse _id ele precisa achar e deletar antes de postar um novo código.
-        const user = await updates.insert(res.payload)
-        return res.status(201).json(user)
+        const older_request = await updates.findOne({ email }) 
+        if (older_request) { await updates.remove({ email }) }
+        const new_request = await updates.insert(res.payload)
+        return res.status(201).json(new_request)
     } catch (error) {
         return res.status(400).send(error.message)
     }
@@ -45,7 +46,7 @@ exports.validateCode = ( async ( req, res, next ) => {
         const { email, code } = req.body
         const payload = await updates.findOne({ email })
         if( payload.pending_code.code != code) { return res.status(401).send("This code does not exists in database.")}
-        if( payload.pending_code.expire_time < Date.now()) { return res.status(406).send("That code aleready expired. Try generate another one in /forgotpassword route.")}
+        if( payload.pending_code.expire_time < Date.now()) { return res.status(406).send("That code already expired. Try generate another one in /forgotpassword route.")}
         next()
     } catch (error) {
         return res.status(400).send(error.message)
