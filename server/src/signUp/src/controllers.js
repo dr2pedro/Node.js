@@ -1,11 +1,10 @@
-const monk = require('monk')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-
-const db = monk(process.env.MONGO_URI)
-const user = db.get('users')
-const { secret } = require('../auth.json')
-const schema = require('./schema.js')
+const monk = require('monk'),
+      bcrypt = require('bcrypt'),
+      jwt = require('jsonwebtoken'),
+      db = monk(process.env.MONGO_URI),
+      user = db.get('users'),
+      { secret } = require('../auth.json'),
+      schema = require('./schema.js')
 
 exports.validateRequest = ( async ( req, res, next ) => {
     try {

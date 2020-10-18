@@ -1,15 +1,11 @@
-const express = require('express')
+const 
+    express = require('express'),
+    { validateRequest, findUser, createUser } = require('./controllers'),
+    router = express.Router()
 
-const { validateRequest, findUser, createUser } = require('./controllers')
+router
+    .get('/', (req, res) => {res.send('The signup app is healthy...')})
+    .post('/', [validateRequest, findUser, createUser])
 
-const router = express.Router()
-
-router.get('/', (req, res) => {
-    res.send('The signup app is healthy...')
-})
-
-router.post('/', [validateRequest, findUser, createUser])
-
-
-
+    
 module.exports = router
