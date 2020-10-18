@@ -1,6 +1,6 @@
-const app = require('./app')
-
-const port = process.env.PORT_FORGOTPASSWORD || 5023
+const 
+  app = require('./app'),
+  port = process.env.PORT_FORGOTPASSWORD || 5023
 
 app.listen(port, () => {
   /* eslint-disable no-console */

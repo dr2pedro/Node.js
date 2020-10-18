@@ -1,19 +1,20 @@
-const express = require('express')
-const morgan = require('morgan')
-const helmet = require('helmet')
-const cors = require('cors')
+const 
+    express = require('express'),
+    morgan = require('morgan'),
+    helmet = require('helmet'),
+    cors = require('cors')
 
 require('dotenv').config()
 
-const forgotPassword = require('./src/routes')
+const 
+    forgotPassword = require('./src/routes'),
+    app = express()
 
-const app = express()
-
-app.use(morgan('dev'))
-app.use(helmet())
-app.use(express.json())
-app.use(cors())
-        
-app.use('/', forgotPassword)
+app
+    .use(morgan('dev'))
+    .use(helmet())
+    .use(express.json())
+    .use(cors())
+    .use('/', forgotPassword)
 
 module.exports = app

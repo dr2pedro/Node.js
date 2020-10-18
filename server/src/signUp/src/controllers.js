@@ -2,22 +2,22 @@ const
     monk = require('monk'),
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken'),
-    db = monk(process.env.MONGO_URI),
-    user = db.get('users'),
-    { secret } = require('../auth.json'),
-    schema = require('./schema.js')
+    user = monk(process.env.MONGO_URI).get('users'),
+    { secret } = require('../auth.json'),{ user_schema } = require('./schemas.js')
 
-exports
-    .validateRequest = ( async ( req, res, next ) => {
+
+module.exports = {
+
+    validateRequest: ( async ( req, res, next ) => {
         try {
-            await schema.validateAsync(req.body)
+            await user_schema.validateAsync(req.body)
             next()
         } catch (error) {
             res.status(400).send(error.message)
         }     
     })
-
-    .findUser = ( async ( req, res, next ) => {
+    ,
+    findUser: ( async ( req, res, next ) => {
         try {  
             const { email } = req.body
             const payload = await user.findOne({ email })
@@ -27,8 +27,8 @@ exports
             return res.status(400).send(error.message)
         } 
     })
-
-    .createUser = ( async (req, res) => {
+    ,
+    createUser: ( async (req, res) => {
         try {       
             password = await bcrypt.hash(req.body.password, 10)
             req.body.password = password
@@ -40,3 +40,12 @@ exports
             return res.status(400).send(error.message) 
         }
     })
+    
+}
+
+
+
+
+
+
+

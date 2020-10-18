@@ -1,15 +1,12 @@
-const express = require('express')
-const { generateCode , findUser, validateCode, updatePassword, sendByMail } = require('./controllers')
+const 
+    express = require('express'),
+    { generateCode , findUser, validateCode, updatePassword, sendByMail } = require('./controllers'),
+    router = express.Router()
 
-const router = express.Router()
+router
+    .get('/', (req, res) => { res.send('The Forgot password app is healthy...') })
+    .post('/', [findUser , generateCode, sendByMail])
+    .post('/reset', [validateCode, updatePassword])
 
-router.get('/', (req, res) => {
-    res.send('The Forgot password app is healthy...')
-})
-
-router.post('/', [findUser , generateCode, sendByMail])
-
-router.post('/reset', [validateCode, updatePassword])
-
-
+    
 module.exports = router

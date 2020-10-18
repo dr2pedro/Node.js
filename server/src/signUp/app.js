@@ -2,13 +2,16 @@ const
     express = require('express'),
     morgan = require('morgan'),
     helmet = require('helmet'),
-    cors = require('cors'),
-    signUp = require('./src/routes'),
-    app = express()
+    cors = require('cors')
 
 require('dotenv').config()
 
-app.use(morgan('dev'))
+const 
+    signUp = require('./src/routes'),
+    app = express()
+
+app
+    .use(morgan('dev'))
     .use(helmet())
     .use(express.json())
     .use(cors())

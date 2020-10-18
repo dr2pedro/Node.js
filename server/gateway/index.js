@@ -1,28 +1,27 @@
-var proxy = require('express-http-proxy');
-const express = require('express')
-const app = express()
-const helmet = require('helmet')
-const cors = require('cors')
-const morgan = require('morgan')
+const 
+  proxy = require('express-http-proxy'),
+  express = require('express'),
+  app = express(),
+  helmet = require('helmet'),
+  cors = require('cors'),
+  morgan = require('morgan')
 
 require('dotenv').config()
 
-const gateway_port = process.env.PORT_GATEWAY || 5080
-const signin_port = process.env.PORT_SIGNIN
-const signup_port = process.env.PORT_SIGNUP
-const forgot_password_port = process.env.PORT_FORGOTPASSWORD
+const 
+  gateway_port = process.env.PORT_GATEWAY || 5080,
+  signin_port = process.env.PORT_SIGNIN,
+  signup_port = process.env.PORT_SIGNUP,
+  forgot_password_port = process.env.PORT_FORGOTPASSWORD
 
-app.use(morgan('dev'))
-app.use(helmet())
-app.use(express.json())
-app.use(cors())
+app
+  .use(morgan('dev'))
+  .use(helmet())
+  .use(express.json())
+  .use(cors())
+  
+  .use('/signin', proxy('http://signin:'+ signin_port + '/'))
+  .use('/signup', proxy('http://signup:' + signup_port + '/'))
+  .use('/forgotpassword', proxy('http://forgotpassword:' + forgot_password_port + '/'))
 
-app.use('/signin', proxy('http://signin:'+ signin_port + '/'))
-app.use('/signup', proxy('http://signup:' + signup_port + '/'))
-app.use('/forgotpassword', proxy('http://forgotpassword:' + forgot_password_port + '/'))
-
-app.listen(gateway_port, () => {
-  /* eslint-disable no-console */
-  console.log(`Gateway endpoints listening on: http://localhost:${gateway_port}`)
-  /* eslint-enable no-console */
-})
+  .listen(gateway_port, () => { console.log(`Gateway endpoints listening on: http://localhost:${gateway_port}`) })
