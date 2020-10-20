@@ -2,20 +2,20 @@ ARG src
 
 FROM node:lts-alpine3.9 AS base
 WORKDIR /app
-COPY configs/auth.json package.json package-lock.json .env ./
+COPY package.json package-lock.json .env ./
 RUN apk --no-cache add curl
 
 FROM base AS gateway 
 COPY server/gateway ./
 
 FROM base AS signin 
-COPY server/src/signIn ./
+COPY server/src/signIn configs/auth.json ./
 
 FROM base AS signup
-COPY server/src/signUp ./
+COPY server/src/signUp configs/auth.json ./
 
 FROM base AS forgotpassword
-COPY server/src/forgotPassword ./
+COPY server/src/forgotPassword configs/smtp.json ./
 
 FROM ${src} AS after
 
