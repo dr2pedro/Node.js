@@ -3,7 +3,11 @@ const
     crypto = require('crypto'),
     bcrypt = require('bcrypt'),
     user = monk(process.env.MONGO_URI).get('users'),
-    updates = monk(process.env.MONGO_URI).get('updates')
+    updates = monk(process.env.MONGO_URI).get('updates'),
+    nodemailer = require('nodemailer'),
+    configs = require('../smtp.json'),
+    hbs = require('nodemailer-express-handlebars'),
+    options = require('../viewEngineOptions.json')
 
 module.exports = {
 
@@ -31,13 +35,43 @@ module.exports = {
         }
      })
     ,
-    sendByMail: ( async ( req, res ) => {
+    registerCode: ( async ( req, res, next ) => {    
         try {
             const { email } = req.body
             const older_request = await updates.findOne({ email }) 
             if (older_request) { await updates.remove({ email }) }
-            const new_request = await updates.insert(res.payload)
-            return res.status(201).json(new_request)
+            await updates.insert(res.payload)
+            next()
+        } catch (error) {
+            return res.status(400).send(error.message)
+        }
+
+    })
+    ,
+    recoveryPasswordEmail: (async ( req, res, next) => {
+        try {
+            const { email } = req.body
+            const mail = {
+                from: '"Pedro dos Santos: CTO-CodePlayData" <pedoidin@teste.com>', //put your credentials
+                to: email,
+                subject: "Code for Recovery Password", 
+                template: 'main',
+                context: res.payload.pending_code
+              }
+            res.mail = mail
+            next()
+        } catch (error) {
+            return res.status(400).send(error.message)
+        }
+    })
+    ,
+    sendMail: (async ( req, res) => {
+        try {
+            nodemailer
+                .createTransport(configs)
+                .use("compile", hbs(options))
+                .sendMail(res.mail)
+            return res.status(201).send('Check your email for the code to update your password.')
         } catch (error) {
             return res.status(400).send(error.message)
         }
