@@ -59,14 +59,16 @@ Nos _services_ nos quais a database de leitura é derivada da de escrita existir
 
 <br>
 
+
 ```Dockerfile
 FROM node:lts-alpine3.9 AS base
 WORKDIR /app
 COPY server/configs/auth.json src/middleware package.json package-lock.json .env ./
 ```
+
 <br>
 
-e implemente manualmente nos seus _endpoints_:
+e no código de modo global, ou...
 
 <br>
 
@@ -79,12 +81,8 @@ const router = express.Router()
 router.use(middlewares.guard)
 ```
 
-<br>
 
-de modo global, ou...
-
-<br>
-
+de modo local.
 ```javascript
 const express = require('express')
 const { guard } = require('./middlewares')
@@ -96,9 +94,74 @@ router.get('/', guard( ), async (req, res, next) => {
 ```
 <br>
 
-de modo local.
+### Configurações
 
+<br>
 
+Após o clone, na raiz desse projeto crie duas pastas: `configs` e `template`.
+
+Na pasta `configs` insira 3 arquivos (caso venha a utilizar os três microserviços dessa _stack_):
+
+-  **`auth.json`**: que irá armazenar o `secret` da API que gera os jsonWebTokens:
+
+```json
+{
+    "secret": "seu_secret"
+}
+```
+
+- **`smtp.json`**: que irá armazenar as configurações do seu servidor SMTP para envio do e-mail de recuperação de senha:
+
+```json
+{
+    "host": "smtp.seuservidor.io",
+    "port": 2222,
+    "auth": {       //caso exista autenticação no seu servidor
+        "user": "seu usuário",
+        "pass": "seu pass"
+    }
+}
+```
+- **`viewEngineOptions.json`**: que armazena as configuraçções da _engine_ de compilação do corpo do e-mail de recuperação de senha (via _nodemailer express handlebars_):
+
+```json
+{
+"viewEngine": {
+    "extName": ".hbs",
+    "partialsDir": "template",
+    "layoutsDir": "template",
+    "defaultLayout": ""
+    },
+"viewPath": "template",
+"extName": ".hbs"
+  }
+
+// caso prefira outro compilador de template basta trocar aqui
+
+```
+
+<br>
+
+E na pasta `template` insira:
+- **`main.hbs`**: que é o template do seu e-mail seguindo a estrutura a seguir (ou qualquer outra que julgar adequada):
+
+```handlebars
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recovery Password</title>
+</head>
+<body>
+    <h1>Code for recovery password</h1>
+<p>This mail was send due to the recovery password request in the API. Use the follow code in 
+    the body of update password request:</p>
+{{ code }}
+<footer> Pedro dos Santos: CTO - CodePlayData©</footer>
+</body>
+</html>
+```
 <br>
 
 
@@ -129,7 +192,8 @@ As seguintes features _Javascript_ foram utilizadas para implementação desse _
 | Joi          |  Validação de campos da requisição               |
 | Supertest    | Testes end to end (E2E)                          |
 | Body-paser   | Manipulação de JSON                              |
-
+| Nomailer     | Envio de emails                                  |
+| Handlebars   | Template de emails                               |
 <br>
 
 ### Diagrama conceitual
