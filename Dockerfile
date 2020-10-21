@@ -15,7 +15,8 @@ FROM base AS signup
 COPY server/src/signUp configs/auth.json ./
 
 FROM base AS forgotpassword
-COPY server/src/forgotPassword configs/smtp.json ./
+COPY server/src/forgotPassword configs/smtp.json configs/viewEngineOptions.json ./
+COPY template template
 
 FROM ${src} AS after
 
