@@ -2,7 +2,9 @@ version: '3.8'
 
 volumes:
   mongo_data:
-      name: mongo_data
+    name: mongo_data
+  backup_mongo:
+    name: backup_data
 
 networks: 
   databases:
@@ -81,6 +83,22 @@ services:
       - "27017"
     volumes:
       - mongo_data:/data/db
+      - backup_mongo:/data/backup
+    networks: 
+      - databases
+    healthcheck:
+      test: sh -c 'mongodump -d authentication --out /data/backup' || exit 1
+    deploy:
+      replicas: 1
+
+  db_copy:
+    image: mongo
+    ports:
+      - "27017"
+    volumes:
+      - backup_mongo:/data/backup
+    healthcheck:
+      test: sh -c 'touch restoredb.sh && echo "mongorestore --drop -d authentication /data/backup"> restoredb.sh && chmod +x restoredb.sh && restoredb.sh' || exit 1
     networks: 
       - databases
     deploy:

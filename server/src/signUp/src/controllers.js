@@ -2,7 +2,7 @@ const
     monk = require('monk'),
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken'),
-    user = monk(process.env.MONGO_URI).get('users'),
+    user = monk(process.env.MONGO_WRITE_URI).get('users'),
     { secret } = require('../auth.json'),{ user_schema } = require('./schemas.js')
 
 
