@@ -98,7 +98,7 @@ services:
     volumes:
       - backup_mongo:/data/backup
     healthcheck:
-      test: sh -c 'touch restoredb.sh && echo "mongorestore --drop -d authentication /data/backup"> restoredb.sh && chmod +x restoredb.sh && restoredb.sh' || exit 1
+      test: sh -c 'touch restoredb.sh && echo "mongorestore --drop /data/backup">restoredb.sh && chmod +x restoredb.sh && bash restoredb.sh' || exit 1
     networks: 
       - databases
     deploy:
