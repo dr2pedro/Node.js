@@ -116,7 +116,7 @@ Na pasta `configs` insira 3 arquivos (caso venha a utilizar os três microservi�
 {
     "host": "smtp.seuservidor.io",
     "port": 2222,
-    "auth": {       //caso exista autenticação no seu servidor
+    "auth": {       // caso exista autenticação no seu servidor
         "user": "seu usuário",
         "pass": "seu pass"
     }
