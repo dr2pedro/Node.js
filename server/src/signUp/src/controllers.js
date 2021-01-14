@@ -3,14 +3,14 @@ const
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken'),
     user = monk(process.env.MONGO_WRITE_URI).get('users'),
-    { secret } = require('../auth.json'),{ user_schema } = require('./schemas.js')
+    { secret } = require('../secret.json'),{ schema } = require('./schema.js')
 
 
 module.exports = {
 
-    validateRequest: ( async ( req, res, next ) => {
+    validateRequest: ( async ( schema, req, res, next) => {
         try {
-            await user_schema.validateAsync(req.body)
+            await schema.validateAsync(req.body)
             next()
         } catch (error) {
             res.status(400).send(error.message)
@@ -19,8 +19,10 @@ module.exports = {
     ,
     findUser: ( async ( req, res, next ) => {
         try {  
-            const { email } = req.body
-            const payload = await user.findOne({ email })
+            const 
+                { email } = req.body,
+                payload = await user.findOne({ email })
+            
             if (payload) { return res.status(409).send({ error: 'User already exists!' }) }
             next()
         } catch (error) {
