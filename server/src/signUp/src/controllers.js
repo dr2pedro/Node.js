@@ -2,29 +2,39 @@ const
     monk = require('monk'),
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken'),
-    user = monk(process.env.MONGO_WRITE_URI).get('users'),
-    { secret } = require('../secret.json'),{ schema } = require('./schema.js')
+    joi = require('joi')
 
 
 module.exports = {
-
-    validateRequest: ( async ( schema, req, res, next) => {
-        try {
+    
+    validateRequest: ( async (  req, res, next, schema ) => {
+       try{
             await schema.validateAsync(req.body)
-            next()
-        } catch (error) {
-            res.status(400).send(error.message)
-        }     
+            return next()
+        } catch (error){
+            return res.status(400).send(error.message)
+        }                
     })
     ,
-    findUser: ( async ( req, res, next ) => {
+    selectColletion: ( (req, res, next, URI, name) => {
+        try{
+            const collection = monk(URI).get('name')
+            return {collection, next()}
+        } catch (error){
+            return res.status(400).send(error.message)
+        }                
+    })
+    ,
+    findUser: ( async (  req, res, next, collection, noUser=true, key) => {
         try {  
             const 
-                { email } = req.body,
-                payload = await user.findOne({ email })
+                { key } = req.body,
+                payload = await colletion.findOne({ key })
             
-            if (payload) { return res.status(409).send({ error: 'User already exists!' }) }
-            next()
+            return payload & noUser=true ? res.status(409).send({ error: 'User already exists!' })
+                   : noUser=false & !payload ? res.status(404).send({ error: 'User not found!' })
+                   : next()
+            
         } catch (error) {
             return res.status(400).send(error.message)
         } 
