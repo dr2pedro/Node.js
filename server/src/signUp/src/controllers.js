@@ -1,6 +1,7 @@
 const 
     bcrypt = require('bcrypt'),
-    jwt = require('jsonwebtoken')
+    jwt = require('jsonwebtoken'),
+    monk = require('monk')
 
 
 module.exports = {
@@ -16,25 +17,15 @@ module.exports = {
         }       
     })
     ,
-    selectCollection: ( ( URI, name ) => {
-        return ( _req, res, next ) => {  
-            try{
-                const collection = monk(URI).get(name)
-                next()
-            } catch (error){
-                res.status(400).send(error.message)
-            }     
-        }   
-    })
-    ,
-    findUserByEmail: ( ( collection, noUser=true ) => {
+    findUserByEmail: ( ( name, URI, noUser=true ) => {
         return async (req, res, next) => {
             try {
                 const { email } = req.body
-                payload = await collection.findOne({ email })
+                collection = await monk(URI).get(name)
+                payload = collection.findOne({ email })
 
-                payload & noUser == true ? res.status(409).send({ error: 'User already exists!' })
-                    : noUser == false & !payload ? res.status(404).send({ error: 'User not found!' })
+                payload && noUser === true ? res.status(409).send({ error: 'User already exists!' })
+                    : noUser === false && !payload ? res.status(404).json({ error: 'User not found!' })
                         : next()
 
             } catch (error) {
@@ -43,14 +34,16 @@ module.exports = {
         } 
     })
     ,
-    createUser: ( async (req, res) => {
-        try {       
-            password = await bcrypt.hash(req.body.password, 10)
-            req.body.password = password
-            const payload = await user.insert(req.body)
-            payload.password = undefined
-            const token = jwt.sign({ _id: payload._id, email: payload.email }, secret, { expiresIn: 14400 })
-            return res.status(201).json({ payload, token })
+    createUser: ( async (name, URI) => {
+        return async (req, res, next) => {
+        try {
+            collection = await monk(URI).get(name)
+            await bcrypt.hash(req.body.password, 10).then()
+            // req.body.password = password
+            // const payload = await user.insert(req.body)
+            // payload.password = undefined
+            // const token = jwt.sign({ _id: payload._id, email: payload.email }, secret, { expiresIn: 14400 })
+            return res.status(201).json(req.body.password)
         } catch (error) {
             return res.status(400).send(error.message) 
         }
