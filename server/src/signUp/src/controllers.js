@@ -1,5 +1,4 @@
 const 
-    monk = require('monk'),
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken')
 

@@ -2,6 +2,7 @@ const
     express = require('express'),
     { validateRequest, selectCollection ,findUserByEmail, createUser } = require('./controllers'),
     router = express.Router(),
+    monk = require('monk'),
     URI = monk(process.env.MONGO_READ_URI),
     name = 'users',
     joi = require('joi')
