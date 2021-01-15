@@ -18,11 +18,11 @@ module.exports = {
     })
     ,
     findUserByEmail: ( ( name, URI, noUser=true ) => {
-        return async (req, res, next) => {
+        return (req, res, next) => {
             try {
                 const { email } = req.body
-                collection = await monk(URI).get(name)
-                payload = collection.findOne({ email })
+                collection = monk(URI).get(name)
+                payload = undefined
 
                 payload && noUser === true ? res.status(409).send({ error: 'User already exists!' })
                     : noUser === false && !payload ? res.status(404).json({ error: 'User not found!' })
@@ -38,14 +38,15 @@ module.exports = {
         return async (req, res, next) => {
         try {
             collection = await monk(URI).get(name)
-            await bcrypt.hash(req.body.password, 10).then()
+            await bcrypt.hash(req.body.password, 10).then(function (result) { req.body.passwod = result})
             // req.body.password = password
-            // const payload = await user.insert(req.body)
+            // const payload = await collection.insert(req.body)
             // payload.password = undefined
             // const token = jwt.sign({ _id: payload._id, email: payload.email }, secret, { expiresIn: 14400 })
-            return res.status(201).json(req.body.password)
+            // return res.status(201).json(req.body.password)
         } catch (error) {
             return res.status(400).send(error.message) 
+            }
         }
     })
     
